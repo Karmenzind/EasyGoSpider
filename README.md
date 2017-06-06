@@ -9,10 +9,10 @@
 * 定时周期爬取，（自动）阻塞重启、超时结束（当前一个小时内的数据算一次任务）
 
 #### 基于：
-win10 & sub Ubuntu on win10
-python27
-scrapy
-mongodb
+* win10 & sub Ubuntu on win10
+* python27
+* scrapy
+* mongodb
 
 #### 待完成：
 * 将数据转化为含热力图图层的地图图片

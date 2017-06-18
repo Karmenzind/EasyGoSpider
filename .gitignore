@@ -1,0 +1,6 @@
+yundama.py
+*.spec
+tmp.py
+*.pyc
+*.log
+

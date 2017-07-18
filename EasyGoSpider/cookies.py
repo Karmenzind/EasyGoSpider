@@ -1,31 +1,40 @@
 # coding: utf-8
 
 import sys
+if __name__ == "__main__":
+    sys.path.append('..')
 import time
+import logging
+import datetime
 from selenium.common import exceptions as SeleniumExceptions
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from db import dbBasic
 from EasyGoSpider import settings
-import datetime
 from PIL import Image
 from EasyGoSpider.yundama import get_captcha_res
 
-today = str(datetime.date.today())
-IDENTITY = settings.CAPTCHA_RECOGNIZ
 reload(sys)
 sys.setdefaultencoding('utf8')
-dcap = dict(DesiredCapabilities.PHANTOMJS)  # PhantomJS需要使用老版手机的user-agent，不然验证码会无法通过
+
+TODAY = str(datetime.date.today())
+ACCOUNT_FAIL_UPPER_LIMIT = 15
+LoginURL = 'http://ui.ptlogin2.qq.com/cgi-bin/login?' \
+           'appid=1600000601&style=9&s_url=http%3A%2F%2Fc.easygo.qq.com%2Feg_toc%2Fmap.html'
+
+# ---------------------------------------------------------------------------------------------------------------------
+
+logger = logging.getLogger(__name__)
+dcap = dict(DesiredCapabilities.PHANTOMJS)
 dcap["phantomjs.page.settings.userAgent"] = (
     "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36"
 )
-
 mongo_cli = dbBasic.MongoBasic()
-loginURL = 'http://ui.ptlogin2.qq.com/cgi-bin/login?appid=1600000601&style=9&s_url=http%3A%2F%2Fc.easygo.qq.com%2Feg_toc%2Fmap.html'
+
+# ---------------------------------------------------------------------------------------------------------------------
 
 def initCookies(myAccount):
-    """
-    获取Cookies
+    """    获取Cookies
     仅限初始化
     """
     for idx, elem in enumerate(myAccount):
@@ -35,22 +44,22 @@ def initCookies(myAccount):
         res['account'] = elem
         res['cookie'] = cookie
         if cookie:
-            print idx, elem, "init cookies done"
+            logger.info(idx, elem, "init cookies done")
         if list(mongo_cli.cookies.find({"account": elem})):
             continue
         mongo_cli.cookies.insert(res)
 
-def getCookie(elem):
 
+def getCookie(elem):
     account = elem['no']
     password = elem['psw']
-    print "Fetching cookie for", account
+    logger.info("Fetching cookie for %s" % account)
 
     for i in xrange(3):
-        print "Trying %s time%s..." % (i+1, "s" if i else '')
+        logger.info("Trying %s time%s..." % (i+1, "s" if i else ''))
         try:
             browser = webdriver.PhantomJS(desired_capabilities=dcap)
-            browser.get(loginURL)
+            browser.get(LoginURL)
             time.sleep(3)
 
             username = browser.find_element_by_id("u")
@@ -87,23 +96,23 @@ def getCookie(elem):
                         mongo_cli.cookies.find_one_and_update({"account": elem}, {"$inc": {"AuthFailed": 1}})
 
         except SeleniumExceptions.NoSuchElementException, e:
-            print e.__class__.__name__, e
+            logger.debug(e)
         except Exception, e:
-            print e.__class__.__name__, e
+            logger.debug(e)
         finally:
             try:
                 browser.quit()
             except:
                 pass
-    print "Get Cookie Failed: %s!" % account
+    logger.warning("Get Cookie Failed: %s!" % account)
     return {}
 
 
 def recogniz_vcode(img_path):
-    if IDENTITY == 1:  # manually recognize captcha
-        print "请找到 %s " % img_path
+    if settings.CAPTCHA_RECOGNIZ == 1:  # manually recognize captcha
+        logger.debug("请找到 %s " % img_path)
         return raw_input("手动在此处输入验证码：\n")
-    elif IDENTITY == 2:  # auto via yundama
+    elif settings.CAPTCHA_RECOGNIZ == 2:  # auto via yundama
         return get_captcha_res(img_path)
 
 
@@ -112,51 +121,50 @@ def after_smoothly_login(browser):
     for elem in browser.get_cookies():
         cookie[elem["name"]] = elem["value"]
     if len(cookie) > 0:
-        print "...got a new cookie"
+        logger.info("...got a new cookie")
         return cookie
 
 
-def fetchCookies(CUSTOM_REFRESH=0):
+def fetch_cookies(ignored_cookies):
+    """    fetch existed cookies from mongo
     """
-    fetch existed cookies from mongo
-    """
-    if settings.REFRESH_TOKENS or CUSTOM_REFRESH:
+    if settings.REFRESH_COOKIES:
         for dct in mongo_cli.cookies.find({}):
-            if dct.get('FailedDate') != today and dct.get("AuthFailed") < 10:
+            if dct.get('FailedDate') != TODAY \
+                    and dct.get("AuthFailed") < ACCOUNT_FAIL_UPPER_LIMIT \
+                    and dct.get("cookie") not in ignored_cookies:
                 refresh_cookie(dct)
     return [i['cookie'] for i in mongo_cli.cookies.find({})
             if i['cookie']
-            and (i.get('FailedDate') != today)
-            and (i.get("AuthFailed") < 10)]
+            and (i.get('FailedDate') != TODAY)
+            and (i.get("AuthFailed") < ACCOUNT_FAIL_UPPER_LIMIT)]
 
 
 def refresh_cookie(dct):
-    """
-    update cookie which is no longer available
+    """    update cookie which is no longer available
     """
     new_cookie = getCookie(dct.get('account'))
     mongo_cli.cookies.find_one_and_update({'_id': dct['_id']},
                                           {'$set': {'cookie': new_cookie}})
 
-def try_to_get_enough_cookies(CUSTOM_REFRESH=0):
+
+def try_to_get_enough_cookies():
     cookies = []
     for i in xrange(3):
-        cookies = fetchCookies(CUSTOM_REFRESH)
+        cookies = fetch_cookies(cookies)
         if len(cookies) >= 3:
             return cookies
         if i < 2:
-            print "Not enough. Trying again..."
+            logger.info("Not enough. Trying again...")
     return cookies
 
-if __name__ == '__main__':
 
-    try_to_get_enough_cookies(1)
-    # myAccount = [
-    #
-    # ]
-    # for line in ''''''.split():
-    #     no, psw = line.split('----')
-    #     myAccount.append({'no': no, 'psw': psw})
-    # print myAccount.__repr__()
-    # initCookies(myAccount)
-    pass
+if __name__ == '__main__':
+    # try_to_get_enough_cookies(1)
+    myAccount = []
+    for line in ''' '''.split():
+        no, psw = line.split('----')
+        myAccount.append({'no': no, 'psw': psw})
+    print myAccount.__repr__()
+    initCookies(myAccount)
+

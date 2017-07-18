@@ -21,7 +21,6 @@ class MongoDBPipleline(object):
         self.hmdata = db["heatmapdata"]
 
     def process_item(self, item, spider):
-        """ 判断item的类型，并作相应的处理，再入数据库 """
         if isinstance(item, HeatMapItem):
             try:
                 _id = item.pop('cur_hour')[0]

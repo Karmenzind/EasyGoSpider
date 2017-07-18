@@ -1,9 +1,7 @@
 # coding: utf-8
 
 import pymongo
-import os
-import mysql.connector
-import yaml
+
 
 class MongoBasic(object):
     def __init__(self):

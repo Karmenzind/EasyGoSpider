@@ -7,6 +7,7 @@
 #     http://doc.scrapy.org/en/latest/topics/settings.html
 #
 import yaml
+import os
 
 BOT_NAME = 'EasyGoSpider'
 
@@ -16,21 +17,14 @@ NEWSPIDER_MODULE = 'EasyGoSpider.spiders'
 # Crawl responsibly by identifying yourself (and your website) on
 # the user-agent
 #USER_AGENT = 'EasyGoSpider (+http://www.yourdomain.com)'
-
-with open('./EasyGoSpider/headers.yaml') as f:
+header_path = os.path.join(os.path.split(__file__)[0], 'headers.yaml')
+with open(header_path) as f:
     _headers = yaml.load(f)
 DEFAULT_REQUEST_HEADERS = _headers
 
 # Disable S3
 AWS_ACCESS_KEY_ID = ""
 AWS_SECRET_ACCESS_KEY = ""
-
-#  orig * 100000
-LAT_STEP = 50000 # Divided into N squares
-LNG_STEP = 30000
-LAT = [30519681, 30791396, LAT_STEP]
-LNG = [103904185, 104205148, LNG_STEP]
-# http://c.easygo.qq.com/api/egc/heatmapdata?lng_min=103.934185&lat_max=50030.769681&lng_max=30103.934185&lat_min=30.769681&level=16&city=%E6%88%90%E9%83%BD&lat=&lng=&_token=
 
 DOWNLOADER_MIDDLEWARES = {
     "EasyGoSpider.middleware.UserAgentMiddleware": 401,
@@ -41,14 +35,32 @@ ITEM_PIPELINES = {
     'EasyGoSpider.pipelines.MongoDBPipleline': 300,
 }
 
-DOWNLOAD_DELAY = 1
-LOG_LEVEL = 'INFO'
+
+COOKIES_DEBUG = True
+LOG_LEVEL = 'DEBUG'
+# LOG_FILE = "./logging.log"
+LOG_ENCODING = "utf-8"
+LOG_ENABLED = 1
+LOG_STDOUT = True
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 CONCURRENT_REQUESTS = 32
 
+DOWNLOAD_DELAY = 1
+
 RETRY_ENABLED = 1
 RETRY_TIMES = 10
 
-REFRESH_TOKENS = 0 # 重新获取所有账号的Token
+CLOSESPIDER_TIMEOUT = 3600
+
+# Don't filter
+DUPEFILTER_CLASS = 'scrapy.dupefilters.BaseDupeFilter'
+
+# CUSTOMIZE
+REFRESH_COOKIES = 1 # 重新获取所有可用账号的COOKIE
 CAPTCHA_RECOGNIZ = 2 # 1: 人工输入 2: 云打码
+
+LAT_STEP = 50000 # Divided into N squares
+LNG_STEP = 30000
+LAT = [30519681, 30791396, LAT_STEP] #  orig * 100000
+LNG = [103904185, 104205148, LNG_STEP]

@@ -1,29 +1,60 @@
 # coding: utf-8
+
+import time
+import math
+import os
+import sched
+import argparse
 import sys
 from scrapy import cmdline
-import time
-from EasyGoSpider.db.dbBasic import MongoBasic
-from EasyGoSpider.cookies import try_to_get_enough_cookies
+
+parser = argparse.ArgumentParser(description="EasyGoSpider")
+group = parser.add_mutually_exclusive_group()
+group.add_argument("--now", action="store_true",
+                   help="Launch right now and only once.")
+group.add_argument("--loop", action="store_true",
+                   help="Launch once every two hours from next even o'clock on.")
+args = parser.parse_args()
+schedule = sched.scheduler(time.time, time.sleep)
 
 
-if len(sys.argv) > 1:
-    try_to_get_enough_cookies(0)
-else:
-    try_to_get_enough_cookies(1)
-mongo_cli = MongoBasic()
-START_HOUR = time.strftime("%Y%m%d%H", time.localtime())
+def next_time(t):
+    next_t = list(t)
+    if math.fmod(next_t[3], 2) == 0:
+        next_t[3] += 2
+    else:
+        next_t[3] += 1
+    next_t = next_t[:4] + [0 for i in range(5)]
+    return next_t
 
-while 1:
-    find_res = mongo_cli.hmdata.find_one({"_id": START_HOUR})
-    find_num = len(find_res) if find_res else 0
-    completeness = find_num == 67
-    if completeness:
-        print "Completed already. :)"
-        break
 
-    current_hour = time.strftime("%Y%m%d%H", time.localtime())
-    if (current_hour != START_HOUR) or (completeness == 1):
-        print "It's already %s. Stopping..." % current_hour
-        break
+def perform_command(cmd, inc):
+    schedule.enter(inc, 0, perform_command, (cmd, inc))
+    os.system(cmd)
 
-    cmdline.execute("scrapy crawl EasyGoSpider".split())
+
+def timming_exe(cmd, inc):
+    schedule.enter(inc, 0, perform_command, (cmd, 7200))
+    schedule.run()
+
+
+def loop():
+    now = time.localtime()
+    print "current time:", list(now)
+    next_t = next_time(now)
+    print "...will be started after", next_t
+    interval = time.mktime(next_t) - time.mktime(now) + 10
+    print "...wait for %s seconds" % interval
+    timming_exe('scrapy crawl proc', interval)
+
+
+if __name__ == '__main__':
+    if len(sys.argv)==1:
+        parser.print_help()
+    elif args.now:
+        cmdline.execute('scrapy crawl proc'.split())
+    elif args.loop:
+        loop()
+
+
+

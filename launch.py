@@ -49,12 +49,9 @@ def loop():
 
 
 if __name__ == '__main__':
-    if len(sys.argv)==1:
+    if len(sys.argv) == 1:
         parser.print_help()
     elif args.now:
         cmdline.execute('scrapy crawl proc'.split())
     elif args.loop:
         loop()
-
-
-

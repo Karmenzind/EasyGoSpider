@@ -16,7 +16,7 @@ NEWSPIDER_MODULE = 'EasyGoSpider.spiders'
 
 # Crawl responsibly by identifying yourself (and your website) on
 # the user-agent
-#USER_AGENT = 'EasyGoSpider (+http://www.yourdomain.com)'
+# USER_AGENT = 'EasyGoSpider (+http://www.yourdomain.com)'
 header_path = os.path.join(os.path.split(__file__)[0], 'headers.yaml')
 with open(header_path) as f:
     _headers = yaml.load(f)
@@ -35,10 +35,9 @@ ITEM_PIPELINES = {
     'EasyGoSpider.pipelines.MongoDBPipleline': 300,
 }
 
-
-COOKIES_DEBUG = True
+COOKIES_DEBUG = False
 LOG_LEVEL = 'DEBUG'
-# LOG_FILE = "./logging.log"
+LOG_FILE = "./logging.log"
 LOG_ENCODING = "utf-8"
 LOG_ENABLED = 1
 LOG_STDOUT = True
@@ -57,10 +56,10 @@ CLOSESPIDER_TIMEOUT = 3600
 DUPEFILTER_CLASS = 'scrapy.dupefilters.BaseDupeFilter'
 
 # CUSTOMIZE
-REFRESH_COOKIES = 1 # 重新获取所有可用账号的COOKIE
-CAPTCHA_RECOGNIZ = 2 # 1: 人工输入 2: 云打码
+REFRESH_COOKIES = 1  # 重新获取所有可用账号的COOKIE
+CAPTCHA_RECOGNIZ = 2  # 1: 人工输入 2: 云打码
 
-LAT_STEP = 50000 # Divided into N squares
+LAT_STEP = 50000  # Divided into N squares
 LNG_STEP = 30000
-LAT = [30519681, 30791396, LAT_STEP] #  orig * 100000
+LAT = [30519681, 30791396, LAT_STEP]  # orig * 100000
 LNG = [103904185, 104205148, LNG_STEP]

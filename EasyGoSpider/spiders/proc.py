@@ -13,7 +13,7 @@ START_HOUR = time.strftime("%Y%m%d%H", time.localtime())
 
 
 def start_url_gen():
-    lats = range(*settings.LAT) # don't use xrange here
+    lats = range(*settings.LAT)  # don't use xrange here
     lngs = range(*settings.LNG)
     base = 'http://c.easygo.qq.com/api/egc/heatmapdata?' \
            'lng_min={lng_min}' \
@@ -29,8 +29,8 @@ def start_url_gen():
         for y, lng_m in enumerate(lngs):
             scale = 1000000.0
             find_res = mongo_cli.hmdata.find_one({"_id": START_HOUR})
-            item_idx = x*len(lngs) + y # idx in mongo. Not usual idx
-            if find_res and find_res.has_key(str(item_idx)): # already in mongo
+            item_idx = x * len(lngs) + y  # idx in mongo. Not usual idx
+            if find_res and find_res.has_key(str(item_idx)):  # already in mongo
                 continue
             else:
                 url = base.format(lat_min=lat_m / scale,
@@ -91,12 +91,14 @@ class BasicSpider(CrawlSpider):
             self.claim_completeness()
             yield l.load_item()
         else:
-            if resp_dct.get("data") == "\\u8be5\\u7528\\u6237\\u8bbf\\u95ee\\u6b21\\u6570\\u8fc7\\u591a".decode('unicode_escape'): # 访问次数过多
+            if resp_dct.get("data") == "\\u8be5\\u7528\\u6237\\u8bbf\\u95ee\\u6b21\\u6570\\u8fc7\\u591a".decode(
+                    'unicode_escape'):  # 访问次数过多
                 banned_cookie = response.request.cookies
                 yield {"BannedCookieToday": banned_cookie}
             else:
                 yield {}
             self.logger.error(u"Crawling %s, %s failed. :(" % (item_idx, response.url))
+
 
 if __name__ == '__main__':
     a = list(start_url_gen())

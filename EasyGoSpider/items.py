@@ -15,8 +15,7 @@ class HeatMapItem(Item):
     # build-in
     data = Field()
     timestamp = Field()
-    others = Field() # code scale flag max_data
-
+    others = Field()  # code scale flag max_data
 
 
 if __name__ == '__main__':

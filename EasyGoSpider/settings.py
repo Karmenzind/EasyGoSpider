@@ -63,3 +63,5 @@ LAT_STEP = 50000  # Divided into N squares
 LNG_STEP = 30000
 LAT = [30519681, 30791396, LAT_STEP]  # orig * 100000
 LNG = [103904185, 104205148, LNG_STEP]
+
+COOKIE_INTERVAL = 1800  # 秒，同一账号成功获取COOKIE后，此时间内不再重复获取

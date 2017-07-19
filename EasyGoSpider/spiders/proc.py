@@ -86,7 +86,7 @@ class BasicSpider(CrawlSpider):
             l.add_value('url', url)
             l.add_value('is_parsed', 0)
 
-            self.finished.update(item_idx)
+            self.finished.add(item_idx)
             self.logger.info(u"Crawling %s, %s successfully. :)" % (item_idx, url))
             self.claim_completeness()
             yield l.load_item()

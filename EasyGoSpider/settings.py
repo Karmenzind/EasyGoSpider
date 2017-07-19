@@ -37,7 +37,7 @@ ITEM_PIPELINES = {
 
 COOKIES_DEBUG = False
 LOG_LEVEL = 'DEBUG'
-LOG_FILE = "./logging.log"
+# LOG_FILE = "./logging.log"
 LOG_ENCODING = "utf-8"
 LOG_ENABLED = 1
 LOG_STDOUT = True
@@ -56,7 +56,7 @@ CLOSESPIDER_TIMEOUT = 3600
 DUPEFILTER_CLASS = 'scrapy.dupefilters.BaseDupeFilter'
 
 # CUSTOMIZE
-REFRESH_COOKIES = 1  # 重新获取所有可用账号的COOKIE
+REFRESH_COOKIES = 0  # 重新获取所有可用账号的COOKIE
 CAPTCHA_RECOGNIZ = 2  # 1: 人工输入 2: 云打码
 
 LAT_STEP = 50000  # Divided into N squares

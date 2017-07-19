@@ -46,7 +46,7 @@ class BasicSpider(CrawlSpider):
     allowed_domains = ["c.easygo.qq.com"]
     all_urls = dict(start_url_gen())
     claimed = ''
-    finished = []
+    finished = set()
 
     def claim_completeness(self):
         percentage = 66 * len(self.finished) / len(self.all_urls)
@@ -86,7 +86,7 @@ class BasicSpider(CrawlSpider):
             l.add_value('url', url)
             l.add_value('is_parsed', 0)
 
-            self.finished.append(item_idx)
+            self.finished.update(item_idx)
             self.logger.info(u"Crawling %s, %s successfully. :)" % (item_idx, url))
             self.claim_completeness()
             yield l.load_item()

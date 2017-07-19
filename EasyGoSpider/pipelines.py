@@ -14,6 +14,7 @@ class EasyGoSpiderPipeline(object):
 
 
 class MongoDBPipleline(object):
+
     def __init__(self):
         client = pymongo.MongoClient("localhost", 27017)
         db = client["EasyGoData"]

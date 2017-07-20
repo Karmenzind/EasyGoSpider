@@ -1,6 +1,5 @@
 # coding: utf-8
 
-import os
 import sys
 
 if __name__ == "__main__":
@@ -172,7 +171,7 @@ def try_to_get_enough_cookies():
         if len(cookies) >= 3:
             return cookies
         if i < 2:
-            logger.info("Not enough. Trying again...")
+            logger.info("Find %s. Not enough. Trying again..." % i)
     return cookies
 
 

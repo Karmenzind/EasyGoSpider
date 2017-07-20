@@ -1,13 +1,14 @@
 # coding: utf-8
 
+import json
+import time
+from EasyGoSpider.middleware import CookiesMiddleware
 from scrapy.loader import ItemLoader
 from scrapy.http import Request
 from scrapy.spiders import CrawlSpider
 from EasyGoSpider.cookies import mongo_cli
 from EasyGoSpider import settings
 from EasyGoSpider.items import HeatMapItem
-import json
-import time
 
 START_HOUR = time.strftime("%Y%m%d%H", time.localtime())
 
@@ -94,6 +95,8 @@ class BasicSpider(CrawlSpider):
             if resp_dct.get("data") == "\\u8be5\\u7528\\u6237\\u8bbf\\u95ee\\u6b21\\u6570\\u8fc7\\u591a".decode(
                     'unicode_escape'):  # 访问次数过多
                 banned_cookie = response.request.cookies
+                self.logger.warning("%s has been BANNED today." % banned_cookie)
+                CookiesMiddleware.cookies.remove(banned_cookie)
                 yield {"BannedCookieToday": banned_cookie}
             else:
                 yield {}

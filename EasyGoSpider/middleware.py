@@ -24,5 +24,8 @@ class CookiesMiddleware(object):
     logger.info("Fetching Cookies Finished. Available num: %s" % len(cookies))
 
     def process_request(self, request, spider):
+        if not self.cookies:
+            raise AssertionError("No available cookies")
         cookie = random.choice(self.cookies)
         request.cookies = cookie
+

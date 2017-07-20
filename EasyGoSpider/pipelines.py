@@ -8,10 +8,6 @@ import pymongo
 import datetime
 from EasyGoSpider.items import HeatMapItem
 
-class EasyGoSpiderPipeline(object):
-    def process_item(self, item, spider):
-        return item
-
 
 class MongoDBPipleline(object):
 

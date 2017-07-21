@@ -6,7 +6,11 @@ import os
 import sched
 import argparse
 import sys
+import logging
 from scrapy import cmdline
+
+logging.basicConfig()
+logger = logging.getLogger(__name__)
 
 parser = argparse.ArgumentParser(description="EasyGoSpider")
 group = parser.add_mutually_exclusive_group()
@@ -40,11 +44,11 @@ def timming_exe(cmd, inc):
 
 def loop():
     now = time.localtime()
-    print "current time:", list(now)
+    logger.info("current time: %s" % now)
     next_t = next_time(now)
-    print "...will be started after", next_t
+    logger.info("...will be started after %s" % next_t)
     interval = time.mktime(next_t) - time.mktime(now) + 10
-    print "...wait for %s seconds" % interval
+    logger.info("...wait for %s seconds" % interval)
     timming_exe('scrapy crawl proc', interval)
 
 

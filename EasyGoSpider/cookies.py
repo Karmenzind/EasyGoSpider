@@ -1,7 +1,6 @@
 # coding: utf-8
 
 import sys
-
 if __name__ == "__main__":
     sys.path.append('..')
 import time
@@ -18,21 +17,22 @@ from EasyGoSpider.yundama import get_captcha_res
 reload(sys)
 sys.setdefaultencoding('utf8')
 
+logging.basicConfig()
+logger = logging.getLogger(__name__)
+mongo_cli = dbBasic.MongoBasic()
+# ---------------------------------------------------------------------------------------------------------------------
+
 TODAY = str(datetime.date.today())
 ACCOUNT_FAIL_UPPER_LIMIT = 15
 LoginURL = 'http://ui.ptlogin2.qq.com/cgi-bin/login?' \
            'appid=1600000601&style=9&s_url=http%3A%2F%2Fc.easygo.qq.com%2Feg_toc%2Fmap.html'
 # ---------------------------------------------------------------------------------------------------------------------
 
-logger = logging.getLogger(__name__)
 dcap = dict(DesiredCapabilities.PHANTOMJS)
 dcap["phantomjs.page.settings.userAgent"] = (
     "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36"
 )
-mongo_cli = dbBasic.MongoBasic()
-
-
-# ---------------------------------------------------------------------------------------------------------------------
+browser = webdriver.PhantomJS(desired_capabilities=dcap)
 
 
 def update_time(item):
@@ -60,11 +60,9 @@ def get_cookie_for_one_account(elem):
     account = elem['no']
     password = elem['psw']
     logger.info("Fetching cookie for %s" % account)
-
     for i in xrange(3):
         logger.info("Trying %s time%s..." % (i + 1, "s" if i else ''))
         try:
-            browser = webdriver.PhantomJS(desired_capabilities=dcap)
             browser.get(LoginURL)
             time.sleep(3)
 
@@ -100,16 +98,10 @@ def get_cookie_for_one_account(elem):
                         return after_smoothly_login(browser)
                     else:
                         mongo_cli.cookies.find_one_and_update({"account": elem}, {"$inc": {"AuthFailed": 1}})
-
         except SeleniumExceptions.NoSuchElementException, e:
             logger.debug(e)
         except Exception, e:
             logger.debug(e)
-        finally:
-            try:
-                browser.quit()
-            except:
-                pass
     logger.warning("Get Cookie Failed: %s!" % account)
     return {}
 
@@ -172,6 +164,7 @@ def try_to_get_enough_cookies():
             return cookies
         if i < 2:
             logger.info("Find %s. Not enough. Trying again..." % i)
+    browser.quit()
     return cookies
 
 

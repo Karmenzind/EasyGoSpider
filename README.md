@@ -16,7 +16,8 @@
 * scrapy
 * mongodb
 
-#### 待完成：
+#### To Do：
+* 加入Custom RetryMiddleWare
 * 将数据转化为热力图图层
 
 :)

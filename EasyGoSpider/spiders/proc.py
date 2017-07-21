@@ -55,7 +55,7 @@ class BasicSpider(CrawlSpider):
         claim = u'Crawled %s / %s. Continuing... |%s|' % (len(self.finished), len(self.all_urls), bar)
         if claim != self.claimed:
             BasicSpider.claimed = claim
-            self.logger.info(claim)
+        self.logger.info(claim)
 
     def start_requests(self):
         while len(self.finished) < len(self.all_urls):

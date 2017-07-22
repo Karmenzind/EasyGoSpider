@@ -14,16 +14,13 @@ from EasyGoSpider import settings
 from PIL import Image
 from EasyGoSpider.yundama import get_captcha_res
 
-reload(sys)
-sys.setdefaultencoding('utf8')
 
-logging.basicConfig()
 logger = logging.getLogger(__name__)
 mongo_cli = dbBasic.MongoBasic()
 # ---------------------------------------------------------------------------------------------------------------------
 
 TODAY = str(datetime.date.today())
-ACCOUNT_FAIL_UPPER_LIMIT = 15
+ACCOUNT_FAIL_UPPER_LIMIT = 20
 LoginURL = 'http://ui.ptlogin2.qq.com/cgi-bin/login?' \
            'appid=1600000601&style=9&s_url=http%3A%2F%2Fc.easygo.qq.com%2Feg_toc%2Fmap.html'
 # ---------------------------------------------------------------------------------------------------------------------
@@ -157,14 +154,16 @@ def refresh_cookie(dct):
 
 
 def try_to_get_enough_cookies():
+    logger.info("...start fetching COOKIES.")
     cookies = []
     for i in xrange(3):
         cookies = fetch_cookies(cookies)
-        if len(cookies) >= 3:
-            return cookies
-        if i < 2:
+        if i < 3:
             logger.info("Find %s. Not enough. Trying again..." % i)
+        else:
+            break
     browser.quit()
+    logger.info("Got cookies: %s" % cookies)
     return cookies
 
 

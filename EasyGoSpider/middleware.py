@@ -7,7 +7,6 @@ from scrapy.exceptions import CloseSpider
 
 logger = logging.getLogger(__name__)
 
-
 class UserAgentMiddleware(object):
     """ change User-Agent """
 
@@ -18,15 +17,10 @@ class UserAgentMiddleware(object):
 
 class CookiesMiddleware(object):
     """ change Cookie """
-    logger.info("...start fetching cookies.")
-    cookies = try_to_get_enough_cookies()
-    if not cookies:
-        raise CloseSpider("No available cookies")
-    logger.info("Fetching Cookies Finished. Available num: %s" % len(cookies))
 
     def process_request(self, request, spider):
-        if not self.cookies:
+        if not spider.cookies:
             raise CloseSpider("No available cookies")
-        cookie = random.choice(self.cookies)
+        cookie = random.choice(spider.cookies)
         request.cookies = cookie
 

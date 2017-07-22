@@ -9,8 +9,12 @@ from scrapy.spiders import CrawlSpider
 from EasyGoSpider.cookies import mongo_cli
 from EasyGoSpider import settings
 from EasyGoSpider.items import HeatMapItem
+from EasyGoSpider.cookies import try_to_get_enough_cookies
 
 START_HOUR = time.strftime("%Y%m%d%H", time.localtime())
+
+import logging
+logger = logging.getLogger(__name__)
 
 
 def start_url_gen():
@@ -48,6 +52,12 @@ class BasicSpider(CrawlSpider):
     all_urls = dict(start_url_gen())
     claimed = ''
     finished = set()
+
+    cookies = ''
+
+    def __init__(self, **kw):
+        super(BasicSpider, self).__init__(**kw)
+        self.cookies = try_to_get_enough_cookies()
 
     def claim_completeness(self):
         percentage = 66 * len(self.finished) / len(self.all_urls)

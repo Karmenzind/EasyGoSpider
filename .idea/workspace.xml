@@ -2,12 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8925f2db-5948-4760-8f35-c680f15ec9e5" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/verify_code.png" afterPath="$PROJECT_DIR$/verify_code.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/EasyGoSpider/cookies.py" afterPath="$PROJECT_DIR$/EasyGoSpider/cookies.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/EasyGoSpider/middleware.py" afterPath="$PROJECT_DIR$/EasyGoSpider/middleware.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/EasyGoSpider/spiders/proc.py" afterPath="$PROJECT_DIR$/EasyGoSpider/spiders/proc.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/launch.py" afterPath="$PROJECT_DIR$/launch.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -86,8 +81,8 @@
           <file leaf-file-name="cookies.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/EasyGoSpider/cookies.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="1633">
-                  <caret line="122" column="38" lean-forward="false" selection-start-line="122" selection-start-column="38" selection-end-line="122" selection-end-column="38" />
+                <state relative-caret-position="1426">
+                  <caret line="77" column="22" lean-forward="false" selection-start-line="77" selection-start-column="22" selection-end-line="77" selection-end-column="22" />
                   <folding>
                     <element signature="e#1245#1286#0" expanded="false" />
                     <element signature="e#1322#1754#0" expanded="false" />
@@ -111,8 +106,8 @@
           <file leaf-file-name="proc.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/EasyGoSpider/spiders/proc.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="1459">
-                  <caret line="78" column="21" lean-forward="true" selection-start-line="78" selection-start-column="21" selection-end-line="78" selection-end-column="21" />
+                <state relative-caret-position="1495">
+                  <caret line="65" column="31" lean-forward="true" selection-start-line="65" selection-start-column="31" selection-end-line="65" selection-end-column="31" />
                   <folding>
                     <element signature="e#17#28#0" expanded="true" />
                   </folding>
@@ -188,11 +183,11 @@
         <option value="$PROJECT_DIR$/EasyGoSpider/tmp_launch.py" />
         <option value="$PROJECT_DIR$/EasyGoSpider/pipelines.py" />
         <option value="$PROJECT_DIR$/EasyGoSpider/settings.py" />
-        <option value="$PROJECT_DIR$/EasyGoSpider/spiders/proc.py" />
         <option value="$PROJECT_DIR$/EasyGoSpider/middleware.py" />
         <option value="$PROJECT_DIR$/EasyGoSpider/yundama.py" />
         <option value="$PROJECT_DIR$/launch.py" />
         <option value="$PROJECT_DIR$/EasyGoSpider/cookies.py" />
+        <option value="$PROJECT_DIR$/EasyGoSpider/spiders/proc.py" />
       </list>
     </option>
   </component>
@@ -918,26 +913,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/EasyGoSpider/settings.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="392">
-          <caret line="40" column="22" lean-forward="true" selection-start-line="40" selection-start-column="22" selection-end-line="40" selection-end-column="22" />
-          <folding>
-            <element signature="e#250#261#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/EasyGoSpider/spiders/proc.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1459">
-          <caret line="78" column="21" lean-forward="true" selection-start-line="78" selection-start-column="21" selection-end-line="78" selection-end-column="21" />
-          <folding>
-            <element signature="e#17#28#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/EasyGoSpider/pipelines.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="483">
@@ -976,10 +951,30 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/EasyGoSpider/settings.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="392">
+          <caret line="40" column="22" lean-forward="true" selection-start-line="40" selection-start-column="22" selection-end-line="40" selection-end-column="22" />
+          <folding>
+            <element signature="e#250#261#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/EasyGoSpider/spiders/proc.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1495">
+          <caret line="65" column="31" lean-forward="true" selection-start-line="65" selection-start-column="31" selection-end-line="65" selection-end-column="31" />
+          <folding>
+            <element signature="e#17#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/EasyGoSpider/cookies.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1633">
-          <caret line="122" column="38" lean-forward="false" selection-start-line="122" selection-start-column="38" selection-end-line="122" selection-end-column="38" />
+        <state relative-caret-position="1426">
+          <caret line="77" column="22" lean-forward="false" selection-start-line="77" selection-start-column="22" selection-end-line="77" selection-end-column="22" />
           <folding>
             <element signature="e#1245#1286#0" expanded="false" />
             <element signature="e#1322#1754#0" expanded="false" />

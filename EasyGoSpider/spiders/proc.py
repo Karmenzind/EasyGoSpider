@@ -49,22 +49,20 @@ def start_url_gen():
 class BasicSpider(CrawlSpider):
     name = "proc"
     allowed_domains = ["c.easygo.qq.com"]
-    all_urls = dict(start_url_gen())
-    claimed = ''
-    finished = set()
-
-    cookies = ''
 
     def __init__(self, **kw):
         super(BasicSpider, self).__init__(**kw)
         self.cookies = try_to_get_enough_cookies()
+        self.claimed = ''
+        self.finished = set()
+        self.all_urls = dict(start_url_gen())
 
     def claim_completeness(self):
         percentage = 66 * len(self.finished) / len(self.all_urls)
         bar = '#' * percentage + '-' * (66 - percentage)
         claim = u'Crawled %s / %s. Continuing... |%s|' % (len(self.finished), len(self.all_urls), bar)
         if claim != self.claimed:
-            BasicSpider.claimed = claim
+            self.claimed = claim
         self.logger.info(claim)
 
     def start_requests(self):

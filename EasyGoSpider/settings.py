@@ -27,8 +27,10 @@ AWS_ACCESS_KEY_ID = ""
 AWS_SECRET_ACCESS_KEY = ""
 
 DOWNLOADER_MIDDLEWARES = {
-    "EasyGoSpider.middleware.UserAgentMiddleware": 401,
-    "EasyGoSpider.middleware.CookiesMiddleware": 402,
+    "scrapy.contrib.downloadermiddleware.redirect.RedirectMiddleware": None,
+    "EasyGoSpider.middleware.LocalRetryMiddleware": 302,
+    "EasyGoSpider.middleware.UserAgentMiddleware": 300,
+    "EasyGoSpider.middleware.CookiesMiddleware": 301,
 }
 
 ITEM_PIPELINES = {
@@ -36,14 +38,14 @@ ITEM_PIPELINES = {
 }
 
 COOKIES_DEBUG = False
-LOG_LEVEL = 'DEBUG'
-LOG_FILE = "./logging.log"
+LOG_LEVEL = 'INFO'
+# LOG_FILE = "./logging.log"
 LOG_ENCODING = "utf-8"
 LOG_ENABLED = 1
 LOG_STDOUT = True
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-CONCURRENT_REQUESTS = 32
+CONCURRENT_REQUESTS = 16
 
 DOWNLOAD_DELAY = 1
 
@@ -65,3 +67,6 @@ LAT = [30519681, 30791396, LAT_STEP]  # orig * 100000
 LNG = [103904185, 104205148, LNG_STEP]
 
 COOKIE_INTERVAL = 1800  # 秒，同一账号成功获取COOKIE后，此时间内不再重复获取
+MAX_FAIL_TIME = 20  # 每个账号失败次数上限，失败次数多有可能已经被禁
+
+AUTO_CLEAR_PHANTOMJS = 1

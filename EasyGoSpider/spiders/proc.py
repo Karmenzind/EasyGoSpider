@@ -10,11 +10,9 @@ from EasyGoSpider.cookies import mongo_cli
 from EasyGoSpider import settings
 from EasyGoSpider.items import HeatMapItem
 from EasyGoSpider.cookies import try_to_get_enough_cookies
+from scrapy.exceptions import CloseSpider
 
 START_HOUR = time.strftime("%Y%m%d%H", time.localtime())
-
-import logging
-logger = logging.getLogger(__name__)
 
 
 def start_url_gen():
@@ -66,17 +64,19 @@ class BasicSpider(CrawlSpider):
         self.logger.info(claim)
 
     def start_requests(self):
-        while len(self.finished) < len(self.all_urls):
-            current_hour = time.strftime("%Y%m%d%H", time.localtime())
-            if current_hour != START_HOUR:
-                self.logger.info("It's already %s. Stopping..." % current_hour)
-                return
-            for url, item_idx in self.all_urls.iteritems():
-                if item_idx in self.finished:
-                    continue
-                else:
-                    yield Request(url, callback=self.parse_item)
-        self.logger.info(u'Crawled %s / %s. Done :)' % (len(self.finished), len(self.all_urls)))
+        # while len(self.finished) < len(self.all_urls):
+        current_hour = time.strftime("%Y%m%d%H", time.localtime())
+        if current_hour != START_HOUR:
+            self.logger.info("It's already %s. Stopping..." % current_hour)
+            return
+        for url, item_idx in self.all_urls.iteritems():
+            if not self.cookies:
+                raise CloseSpider("No enough cookies.")
+            if item_idx in self.finished:
+                continue
+            else:
+                yield Request(url, callback=self.parse_item)
+                # self.logger.info(u'Crawled %s / %s. Done :)' % (len(self.finished), len(self.all_urls)))
 
     def parse_item(self, response):
         url = response.url
@@ -84,31 +84,31 @@ class BasicSpider(CrawlSpider):
         self.logger.info("Trying page %s %s" % (item_idx, url))
 
         resp_dct = json.loads(response.body)
-        if resp_dct.get('code') == 0:
-            l = ItemLoader(item=HeatMapItem(), response=response)
-            current_hour = time.strftime("%Y%m%d%H", time.localtime())
-            l.add_value('cur_hour', current_hour)
-            l.add_value('serial', item_idx)
-            l.add_value('data', resp_dct.pop('data'))
-            l.add_value('timestamp', resp_dct.pop('nt'))
-            l.add_value('others', resp_dct)
-            l.add_value('url', url)
-            l.add_value('is_parsed', 0)
 
-            self.finished.add(item_idx)
-            self.logger.info(u"Crawling %s, %s successfully. :)" % (item_idx, url))
-            self.claim_completeness()
-            yield l.load_item()
-        else:
-            if resp_dct.get("data") == "\\u8be5\\u7528\\u6237\\u8bbf\\u95ee\\u6b21\\u6570\\u8fc7\\u591a".decode(
-                    'unicode_escape'):  # 访问次数过多
-                banned_cookie = response.request.cookies
-                self.logger.warning("%s has been BANNED today." % banned_cookie)
-                CookiesMiddleware.cookies.remove(banned_cookie)
-                yield {"BannedCookieToday": banned_cookie}
-            else:
-                yield {}
-            self.logger.error(u"Crawling %s, %s failed. :(" % (item_idx, response.url))
+        l = ItemLoader(item=HeatMapItem(), response=response)
+        current_hour = time.strftime("%Y%m%d%H", time.localtime())
+        l.add_value('cur_hour', current_hour)
+        l.add_value('serial', item_idx)
+        l.add_value('data', resp_dct.pop('data'))
+        l.add_value('timestamp', resp_dct.pop('nt'))
+        l.add_value('others', resp_dct)
+        l.add_value('url', url)
+        l.add_value('is_parsed', 0)
+
+        self.finished.add(item_idx)
+        self.logger.info(u"Crawling %s, %s successfully. :)" % (item_idx, url))
+        self.claim_completeness()
+        yield l.load_item()
+        # else:
+        #     if resp_dct.get("data") == "\\u8be5\\u7528\\u6237\\u8bbf\\u95ee\\u6b21\\u6570\\u8fc7\\u591a".decode(
+        #             'unicode_escape'):  # 访问次数过多
+        #         banned_cookie = response.request.cookies
+        #         self.logger.warning("%s has been BANNED today." % banned_cookie)
+        #         self.cookies.remove(banned_cookie)
+        #         yield {"BannedCookieToday": banned_cookie}
+        #     else:
+        #         yield {}
+        #     self.logger.error(u"Crawling %s, %s failed. :(" % (item_idx, response.url))
 
 
 if __name__ == '__main__':

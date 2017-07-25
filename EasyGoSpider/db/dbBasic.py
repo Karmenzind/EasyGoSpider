@@ -12,6 +12,8 @@ class MongoBasic(object):
         self.cmd = db.command
 
 
+mongo_cli = MongoBasic()
+
 if __name__ == '__main__':
     m = MongoBasic()
     import re

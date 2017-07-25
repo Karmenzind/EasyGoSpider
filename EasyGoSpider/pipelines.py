@@ -6,11 +6,13 @@
 
 import pymongo
 import datetime
+import logging
 from EasyGoSpider.items import HeatMapItem
+
+logger = logging.getLogger(__name__)
 
 
 class MongoDBPipleline(object):
-
     def __init__(self):
         client = pymongo.MongoClient("localhost", 27017)
         db = client["EasyGoData"]
@@ -27,10 +29,5 @@ class MongoDBPipleline(object):
                 self.hmdata.find_one_and_update({'_id': _id},
                                                 {"$set": {serial: item}})
             except Exception, e:
-                print e.__class__.__name__, e
-        elif isinstance(item, dict) and item.has_key("BannedCookieToday"):
-            today = str(datetime.date.today())
-            self.cookies.find_one_and_update({"cookie": item['BannedCookieToday']},
-                                             {"$set": {"FailedDate": today}})
-
+                logger.info(e.__class__.__name__, e)
         return item

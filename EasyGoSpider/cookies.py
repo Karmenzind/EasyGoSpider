@@ -194,12 +194,7 @@ def try_to_get_enough_cookies():
 if __name__ == '__main__':
     # try_to_get_enough_cookies(1)
     myAccount = []
-    for line in '''2081016641----kww28533
-1436291918----ntpqdh19
-3569960031----rhp56759
-1041767505----exmfpnk7
-2505519324----g7641119
-1344169957----wkbcaj82'''.split():
+    for line in ''''''.split():
         no, psw = line.split('----')
         myAccount.append({'no': no, 'psw': psw})
     print myAccount.__repr__()
